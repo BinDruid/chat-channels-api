@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+psycopg2-binary = "*"
+django-extensions = "*"
+python-dotenv = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+drf-standardized-errors = "*"
+django-jalali = "*"
+djoser = "*"
+drf-yasg = "*"
+channels-redis = "*"
+django-redis = "*"
+channels = {extras = ["daphne"], version = "*"}
+
+[dev-packages]
+django-debug-toolbar = "*"
+black = "*"
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true
