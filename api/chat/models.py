@@ -7,17 +7,20 @@ User = get_user_model()
 
 class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="rooms")
+    name = models.CharField(max_length=255)
     online_chatters = models.ManyToManyField(to=User, blank=True)
+    chatters = models.ManyToManyField(to=User, related_name="conversations")
 
     def get_online_count(self):
-        return self.online.count()
+        return self.online_chatters.count()
 
     def join(self, user):
-        self.online.add(user)
+        self.online_chatters.add(user)
         self.save()
 
     def leave(self, user):
-        self.online.remove(user)
+        self.online_chatters.remove(user)
         self.save()
 
     def __str__(self):
@@ -29,6 +32,11 @@ class MessageManager(models.Manager):
         return Message.objects.filter(conversation_id=conversation).order_by(
             "-timestamp"
         )[:20]
+
+    def last_message(self, conversation):
+        return Message.objects.filter(conversation_id=conversation).order_by(
+            "-timestamp"
+        )[0]
 
 
 class Message(models.Model):

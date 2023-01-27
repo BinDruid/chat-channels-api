@@ -33,3 +33,29 @@ class ConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Conversation
         fields = ["id"]
+
+
+class ConversationListSerializer(serializers.ModelSerializer):
+    owner = UserSerializer()
+    unread_count = serializers.SerializerMethodField("count_of_unseen")
+
+    def count_of_unseen(self, obj):
+        return obj.count_of_unseen()
+
+    class Meta:
+        model = Conversation
+        fields = ["id", "session_name", "created_at", "owner", "unread_count"]
+
+
+class ConversationDetailSerializer(serializers.ModelSerializer):
+    owner = UserSerializer()
+
+    class Meta:
+        model = Conversation
+        fields = ["id", "session_name" "owner"]
+
+
+class ConversationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conversation
+        exclude = ("owner",)
