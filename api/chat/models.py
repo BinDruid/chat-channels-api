@@ -15,12 +15,20 @@ class Conversation(models.Model):
     def get_online_count(self):
         return self.online_chatters.count()
 
-    def join(self, user):
+    def join_online(self, user):
         self.online_chatters.add(user)
         self.save()
 
-    def leave(self, user):
+    def leave_online(self, user):
         self.online_chatters.remove(user)
+        self.save()
+
+    def join(self, user):
+        self.chatters.add(user)
+        self.save()
+
+    def leave(self, user):
+        self.chatters.remove(user)
         self.save()
 
     def __str__(self):

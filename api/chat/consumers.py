@@ -34,6 +34,7 @@ class ChatConsumer(JsonWebsocketConsumer):
             return
 
         self.accept()
+        self.conversation.join_online(self.user)
         async_to_sync(self.channel_layer.group_add)(
             self.conversation_name,
             self.channel_name,
@@ -53,6 +54,7 @@ class ChatConsumer(JsonWebsocketConsumer):
         )
 
     def disconnect(self, code):
+        self.conversation.leave_online(self.user)
         print("Disconnected!")
         return super().disconnect(code)
 

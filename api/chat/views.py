@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
@@ -5,11 +6,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Conversation
-from .serializers import (
-    ConversationDetailSerializer,
-    ConversationCreateSerializer,
-    ConversationListSerializer,
-)
+from .serializers import ConversationUpdateSerializer, ConversationListSerializer
+
+
+User = get_user_model()
 
 
 class ActionMixin:
@@ -20,7 +20,7 @@ class ActionMixin:
         return self.queryset_per_action
 
 
-class ChatConversationView(ActionMixin, ModelViewSet):
+class ConversationView(ActionMixin, ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     lookup_field = "pk"
@@ -29,34 +29,27 @@ class ChatConversationView(ActionMixin, ModelViewSet):
     def serializer_per_action(self):
         serializer_classes = {
             "list": ConversationListSerializer,
-            "retrieve": ConversationDetailSerializer,
-            "create": ConversationCreateSerializer,
+            "partial_update": ConversationUpdateSerializer,
         }
         return serializer_classes[self.action]
 
     @property
     def queryset_per_action(self):
         queryset_classes = {
-            "list": Conversation.objects.filter(members__user=self.request.user),
-            "retrieve": Conversation.objects.filter(owner=self.request.user),
-            "create": Conversation.objects.all(),
+            "list": Conversation.objects.filter(chatters=self.request.user),
+            "partial_update": Conversation.objects.all(),
         }
         return queryset_classes[self.action]
 
-    def create(self, request, *args, **kwargs):
-        """
-        Create a session with user as the owner and add him as a memeber of it.
-        """
-        response = super().create(request, *args, **kwargs)
-        new_chat_member = Conversation()
-        new_chat_member.chat_session_id = response.data["id"]
-        new_chat_member.user = self.request.user
-        new_chat_member.save()
-        response.data["message"] = "You have joined new chat session!"
-        return response
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    def perform_update(self, serializer):
+        action = self.request.data["action"]
+        instance = self.get_object()
+        user = self.request.user
+        perform_action_method = getattr(instance, action, None)
+        if perform_action_method is None:
+            raise ValueError(f"Invaid action: It should be either join or leave!")
+        perform_action_method(user)
+        instance.save()
 
 
 class ApiRootView(APIView):

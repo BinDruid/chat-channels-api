@@ -1,0 +1,25 @@
+### Variables
+@base = http://localhost:4030/v1
+@auth-token-1 = a93191032c7f4d642206b774f6c6583ec9f558ae
+@auth-token-2 = afa2edf4f68dbe88eec08bd1da96a45ba34f5fc0
+@chat_session = 6ae942f1-c9c1-4257-9b3b-0e4bde4ebf31
+@contentType = application/json
+###
+# Get auth token
+POST {{base}}/auth/
+Content-Type: {{contentType}}
+
+{    
+    "username":"",
+    "password": ""
+}
+
+###
+# Join or leave a  chat conversation
+PATCH {{base}}/chats/conversations/679b34ea-3aa6-4258-bc3e-912d2991d7c6/members/
+Authorization: Token {{auth-token-2}}
+Content-Type: {{contentType}}
+
+{"action":"join"}
+
+###
