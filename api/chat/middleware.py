@@ -73,7 +73,8 @@ def get_user(scope):
 
 class TokenAuthMiddleware:
     """
-    Custom middleware that takes a token from the query string and authenticates via Django Rest Framework authtoken.
+    Custom middleware that takes a token from the query string 
+    and authenticates via Django Rest Framework authtoken.
     """
 
     def __init__(self, app):

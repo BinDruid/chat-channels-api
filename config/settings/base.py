@@ -21,11 +21,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # project apps
-    # "apps.core",
-    # third party
-    "channels",
     "api.chat",
     "api.users",
+    # third party
+    "channels",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_yasg",

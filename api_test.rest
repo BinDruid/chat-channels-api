@@ -2,7 +2,7 @@
 @base = http://localhost:4030/v1
 @auth-token-1 = a93191032c7f4d642206b774f6c6583ec9f558ae
 @auth-token-2 = afa2edf4f68dbe88eec08bd1da96a45ba34f5fc0
-@chat_session = 6ae942f1-c9c1-4257-9b3b-0e4bde4ebf31
+@conversation_id = 679b34ea-3aa6-4258-bc3e-912d2991d7c6
 @contentType = application/json
 ###
 # Get auth token
@@ -15,8 +15,15 @@ Content-Type: {{contentType}}
 }
 
 ###
-# Join or leave a  chat conversation
-PATCH {{base}}/chats/conversations/679b34ea-3aa6-4258-bc3e-912d2991d7c6/members/
+# List user conversations
+GET {{base}}/chats/conversations/
+Authorization: Token {{auth-token-2}}
+Content-Type: {{contentType}}
+
+
+###
+# Join in or leave from a conversation
+PATCH {{base}}/chats/conversations/{{conversation_id}}/members/
 Authorization: Token {{auth-token-2}}
 Content-Type: {{contentType}}
 

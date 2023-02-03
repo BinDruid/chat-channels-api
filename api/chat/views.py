@@ -47,14 +47,21 @@ class ConversationView(ActionMixin, ModelViewSet):
         user = self.request.user
         perform_action_method = getattr(instance, action, None)
         if perform_action_method is None:
-            raise ValueError(f"Invaid action: It should be either join or leave!")
+            raise ValueError(f"Invalid action: It should be either join or leave!")
         perform_action_method(user)
         instance.save()
+
+    def list(self, request, *args, **kwargs):
+        """
+        Returns pivot and filter parameters in response.
+        """
+        response = super().list(request, args, kwargs)
+        return response
 
 
 class ApiRootView(APIView):
     """
-    Lists currently avaiable endpoints.
+    Lists currently available endpoints.
     """
 
     def get(self, request, format=None):

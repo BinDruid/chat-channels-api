@@ -45,7 +45,7 @@ class ChatConsumer(JsonWebsocketConsumer):
                 "conversation_name": conversation.name,
             }
         )
-        recent_messages = Message.objects.recent_chats(self.conversation_id)
+        recent_messages = conversation.recent_chats()
         self.send_json(
             {
                 "type": "server_recent_messages",

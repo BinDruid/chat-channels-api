@@ -31,10 +31,14 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ConversationListSerializer(serializers.ModelSerializer):
     owner = UserSerializer()
+    last_message = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ["id", "owner", "name"]
+        fields = ["id", "owner", "name", "last_message"]
+
+    def get_last_message(self, obj):
+        return MessageSerializer(obj.last_message()).data
 
 
 class ConversationUpdateSerializer(serializers.ModelSerializer):
