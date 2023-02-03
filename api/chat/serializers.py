@@ -37,8 +37,8 @@ class ConversationListSerializer(serializers.ModelSerializer):
         model = Conversation
         fields = ["id", "owner", "name", "last_message"]
 
-    def get_last_message(self, obj):
-        return MessageSerializer(obj.last_message()).data
+    def get_last_message(self, conversation):
+        return MessageSerializer(conversation.last_message).data
 
 
 class ConversationUpdateSerializer(serializers.ModelSerializer):

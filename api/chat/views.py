@@ -51,13 +51,6 @@ class ConversationView(ActionMixin, ModelViewSet):
         perform_action_method(user)
         instance.save()
 
-    def list(self, request, *args, **kwargs):
-        """
-        Returns pivot and filter parameters in response.
-        """
-        response = super().list(request, args, kwargs)
-        return response
-
 
 class ApiRootView(APIView):
     """

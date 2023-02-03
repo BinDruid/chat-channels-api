@@ -45,11 +45,12 @@ class ChatConsumer(JsonWebsocketConsumer):
                 "conversation_name": conversation.name,
             }
         )
-        recent_messages = conversation.recent_chats()
         self.send_json(
             {
                 "type": "server_recent_messages",
-                "messages": MessageSerializer(recent_messages, many=True).data,
+                "messages": MessageSerializer(
+                    conversation.recent_chats, many=True
+                ).data,
             }
         )
 
@@ -85,6 +86,15 @@ class ChatConsumer(JsonWebsocketConsumer):
                     "id": content["id"],
                 },
             )
+        if message_type == "client_is_typing":
+            async_to_sync(self.channel_layer.group_send)(
+                self.conversation_name,
+                {
+                    "type": "chatter_is_typing",
+                    "user": self.user.username,
+                    "typing": content["typing"],
+                },
+            )
         return super().receive_json(content, **kwargs)
 
     def new_chat_message(self, event):
@@ -92,5 +102,9 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.send_json(event)
 
     def delete_chat_message(self, event):
+        print(event)
+        self.send_json(event)
+
+    def chatter_is_typing(self, event):
         print(event)
         self.send_json(event)
